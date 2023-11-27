@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
-import form from './components/URLform'
+import Form from './components/URLform'
 
 function App() {
   return (
@@ -9,8 +9,8 @@ function App() {
       <div className='auth-wrapper'>
         <div className='auth-inner'>
           <Switch>
-            <Route exact path='/' component={form} />
-            <Route path='/App' component={form} />
+            <Route exact path='/' component={Form} />
+            <Route path='/App' component={Form} />
           </Switch>
         </div>
       </div>
