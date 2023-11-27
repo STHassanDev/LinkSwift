@@ -1,20 +1,22 @@
-import { BrowserRouter } from 'react-router-dom';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
 import Form from './components/URLform'
 
 function App() {
   return (
-    <div className="App">
-      <div className='auth-wrapper'>
-        <div className='auth-inner'>
-          <Switch>
-            <Route exact path='/' component={Form} />
-            <Route path='/App' component={Form} />
-          </Switch>
+    <Router>
+      <div className="App">
+        <div className='auth-wrapper'>
+          <div className='auth-inner'>
+            <Switch>
+              <Route exact path='/' component={Form} />
+              <Route path='/App' component={Form} />
+            </Switch>
+          </div>
         </div>
       </div>
-    </div>
+    </Router>
   );
 }
 
