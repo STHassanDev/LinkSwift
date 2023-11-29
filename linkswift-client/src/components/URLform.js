@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { nanoid } from 'nanoid'
-import { getDatabase, child, red, set, get } from 'firebase/database'
+import { getDatabase, child, ref, set, get } from 'firebase/database'
 import { isWebUrl } from 'valid-url'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import ToolTip from 'react-bootstrap/Tooltip'
 
-function Form() {
+function Form(props) {
     const [formData, setFormData] = useState({
         longURL: '', //Inputted long url from the user
         preferedAlias: '', //Optional user input
@@ -13,119 +13,26 @@ function Form() {
         loading: false, //Shows spinng logo
         errors: [], //Keeps track of which fields on our form have errors
         errorMessage: {}, //Keeps track of the corresponding message for each error
-        toolTipMessage: 'Copy to Clip Board' //Will be updated as the user copies short url
+        toolTipMessage: 'Copy to Clip Board', //Will be updated as the user copies short url
+        count: 0
     })
 
-    //When the user clicks the submit button
-    const onSubmit = async (event) => {
-        event.preventDefault(); //Prevents the page from reloading.
+    useEffect(() => {
+        console.log(formData.count)
+    }, [formData.count])
 
+    async function onSubmit(event) {// Needs to be finished
+        event.preventDefault(); //Prevents the page from reloading.D
         setFormData({
             loading: true,
-            generatedURL: ''
+            generatedURL: '',
+            count: 2
         })
-
-        // Validate the inputted long url
-        const isFormValid = await validateInput();
-        if (!isFormValid) {
-            return;
-        }
-
-        // If the user inputted a preferred alias, we use it
-        // If not, we generate one. 
-        const generatedKey = nanoid(6) // Six characters long
-        const generatedURL = "linkswift.com/" + generatedKey
-
-        if (formData.preferedAlias !== '') {
-            generatedKey = preferedAlias
-            generatedURL = "linkswift.com/" + generatedKey
-        }
-
-        const db = getDatabase();
-        set(ref(db, '/' + generatedKey), {
-            generatedKey: generatedKey,
-            longURL: formData.longURL,
-            preferedAlias: formData.preferedAlias,
-            generatedURL: generatedURL
-        }).then((result) => {
-            setFormData({
-                generatedURL: generatedURL,
-                loading: false
-            })
-        }).catch((e) => {
-            //Handle errors
-        })
+        console.log("You got this" + String(formData.loading))
     }
 
-    //Checks if field has an error
     const hasError = (key) => {
         return formData.errors.indexOf(key) !== -1
-    }
-
-    const handleChange = (e) => {
-        const { id, value } = e.target
-        setFormData(prevState => ({
-            ...prevState,
-            [id]: value
-        }))
-    }
-
-    const validateInput = async () => {
-        var errors = []
-        var errorMessages = formData.errorMessage
-
-        //Validate long url
-        if (formData.longURL.length === 0) {
-            errors.push("longURL")
-            errorMessages['longURL'] = "Please enter a URL."
-        } else if (!isWebUrl(formData.longURL)) {
-            errors.push("longURL")
-            errorMessages["longURL"] = "Please enter a URL in the form of https://www......"
-        }//Additional retrictions for later
-
-        //Validate preferred alias
-        if (formData.preferedAlias !== '') {
-            if (formData.preferedAlias.length > 7) {
-                errors.push('suggestedAlias')
-                errorMessages['suggestedAlias'] = 'Please enter an Alias less than 7 characters.'
-            } else if (formData.preferedAlias.indexOf(' ') >= 0) {
-                errors.push('suggestedAlias')
-                errorMessages['suggestedAlias'] = 'No Spaces allowed. Please enter one witout space.'
-            }
-
-            var keyExists = await checkKeyExists()
-
-            if (keyExists.exists()) {
-                errors.push('suggestedAlias')
-                errorMessages['suggestedAlias'] = 'The Alias you have enter already exists. Pleae enter a different one.'
-            }
-
-            setFormData({
-                errors: errors,
-                errorMessages: errorMessages,
-                loading: false
-            })
-
-            if (errors.length > 0) {
-                return false
-            }
-
-            return true
-        }
-    }
-
-    const checkKeyExists = async () => {
-        const dbRef = ref(getDatabase())
-        return get(child(dbRef, '/$(formData.preferedAlias)')).catch((error) => {
-            return false
-        })
-    }
-
-    const copyToClipBoard = () => {
-        navigator.clipboard.writeText(formData.generatedURL)
-        setFormData({
-            toolTipMessage: 'Copied'
-        })
     }
 
     return (
@@ -133,11 +40,11 @@ function Form() {
             <div className="container">
                 <form autoComplete="off">
                     <h3>Link Swift</h3>
-                    <div className="form-group:">
+
+                    <div className="form-group">
                         <label>Enter your URL</label>
-                        <input
-                            id="longURL"
-                            onChange={handleChange}
+                        <input id="longURL"
+                            //Add Handle change
                             value={formData.longURL}
                             type="url"
                             required
@@ -149,8 +56,8 @@ function Form() {
                             placeholder="https://www." />
                     </div>
 
-                    <div className={
-                        hasError = ("longURL") ? "text-danger" : "visually-hidden"
+                    <div className={ //Will stay visually hidden until an error from inputted URL 
+                        hasError("longURL") ? "text-danger" : "visually-hidden"
                     }
                     >
                         {formData.errorMessage.longURL}
@@ -164,7 +71,7 @@ function Form() {
                             </div>
                             <input
                                 id="preferredAlias"
-                                onChange={handleChange}
+                                //onChange={handleChange}
                                 value={formData.preferedAlias}
                                 className={
                                     hasError('preferredAlias')
@@ -175,13 +82,11 @@ function Form() {
                                 placeholder="eg. w4guy6 (Optional)"
                             />
                         </div>
-                        <div
-                            className={
-                                hasError("preferrededAlias") ? "text-dange" : "visually-hidden"
-                            }>
-                            {formData.errorMessage.suggestedAlias}
+                    </div>
 
-                        </div>
+                    <div className={ //Will stay hidden until error from inputted short URL
+                        hasError("preferrededAlias") ? "text-dange" : "visually-hidden"}>
+                        {formData.errorMessage.suggestedAlias}
                     </div>
 
                     <button className="btn btn-primary" type="button" onClick={onSubmit}>
@@ -215,7 +120,7 @@ function Form() {
                                         value={formData.generatedURL}
                                         className="form-control"
                                         placeholder="Recipient's username"
-                                        aria-label="Recipient username"
+                                        aria-label="Recipient's username"
                                         aria-describedby="basic-addon2" />
                                     <div className="input-group-append">
                                         <OverlayTrigger
@@ -228,7 +133,7 @@ function Form() {
                                             }
                                         >
                                             <button
-                                                onClick={() => copyToClipBoard()}
+                                                //onClick={() => copyToClipBoard()}
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="Tooltip on top"
@@ -239,10 +144,12 @@ function Form() {
                                 </div>
                             </div>
                     }
+
                 </form>
             </div>
         </>
     )
+
 }
 
 export default Form
