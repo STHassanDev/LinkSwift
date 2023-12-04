@@ -14,12 +14,15 @@ function Form(props) {
         errors: [], //Keeps track of which fields on our form have errors
         errorMessage: {}, //Keeps track of the corresponding message for each error
         toolTipMessage: 'Copy to Clip Board', //Will be updated as the user copies short url
-        count: ''
     })
+    const hasError = (key) => {
+        return formData.errors.indexOf(key) !== -1
+    }
 
-    useEffect(() => {
-        console.log(formData.count)
-    }, [formData.count])
+    useEffect(()=>{
+        console.log(formData.errors.indexOf("longURL") !== -1)
+    },[formData,setFormData])
+
 
     async function onSubmit(event) {// Needs to be finished
         event.preventDefault(); //Prevents the page from reloading.D
@@ -27,10 +30,7 @@ function Form(props) {
             ...formData,
             loading: true,
             generatedURL: '',
-            count: 2
         })
-
-        console.log("You got this" + String(formData.loading))
 
 
         // Validate the inputted long url
@@ -38,6 +38,7 @@ function Form(props) {
         if (!isFormValid) {
             return;
         }
+
 
         // If the user inputted a preferred alias, we use it
         // If not, we generate one. 
@@ -67,9 +68,6 @@ function Form(props) {
 
     }
 
-    const hasError = (key) => {
-        return formData.errors.indexOf(key) !== -1
-    }
 
     const handleChange = (e) => {
         const { id, value } = e.target
@@ -77,7 +75,6 @@ function Form(props) {
             ...formData,
             [id]: value
         })
-        console.log(id, value)
     }
 
     const validateInput = async () => {
@@ -109,20 +106,19 @@ function Form(props) {
                 errors.push('suggestedAlias')
                 errorMessages['suggestedAlias'] = 'The Alias you have enter already exists. Pleae enter a different one.'
             }
-
-            setFormData({
-                ...formData,
-                errors: errors,
-                errorMessages: errorMessages,
-                loading: false
-            })
-
-            if (errors.length > 0) {
-                return false
-            }
-
-            return true
         }
+        setFormData({
+            ...formData,
+            errors: errors,
+            errorMessages: errorMessages,
+            loading: false
+        })
+
+        if (errors.length > 0) {
+            return false
+        }
+
+        return true
     }
 
     const checkKeyExists = async () => { // Will be used inside validate url function
@@ -153,7 +149,7 @@ function Form(props) {
                             type="url"
                             required
                             className={
-                                hasError('longURL')
+                                hasError("longURL")
                                     ? "form-control is-invalid"
                                     : "form-control"
                             }
@@ -189,7 +185,7 @@ function Form(props) {
                     </div>
 
                     <div className={ // Will stay hidden until error from inputted short URL
-                        hasError("preferrededAlias") ? "text-dange" : "visually-hidden"}>
+                        hasError("suggestedAlias") ? "text-danger" : "visually-hidden"}>
                         {formData.errorMessage.suggestedAlias}
                     </div>
 
