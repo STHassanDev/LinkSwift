@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { nanoid } from 'nanoid'
 import { getDatabase, child, ref, set, get } from 'firebase/database'
-import { isWebUrl } from 'valid-url'
+import { isWebUri } from 'valid-url'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import ToolTip from 'react-bootstrap/Tooltip'
 
@@ -14,7 +14,7 @@ function Form(props) {
         errors: [], //Keeps track of which fields on our form have errors
         errorMessage: {}, //Keeps track of the corresponding message for each error
         toolTipMessage: 'Copy to Clip Board', //Will be updated as the user copies short url
-        count: 0
+        count: ''
     })
 
     useEffect(() => {
@@ -24,15 +24,119 @@ function Form(props) {
     async function onSubmit(event) {// Needs to be finished
         event.preventDefault(); //Prevents the page from reloading.D
         setFormData({
+            ...formData,
             loading: true,
             generatedURL: '',
             count: 2
         })
+
         console.log("You got this" + String(formData.loading))
+
+
+        // Validate the inputted long url
+        const isFormValid = await validateInput();
+        if (!isFormValid) {
+            return;
+        }
+
+        // If the user inputted a preferred alias, we use it
+        // If not, we generate one. 
+        var generatedKey = nanoid(6) // Six characters long
+        var generatedURL = "linkswift.com/" + generatedKey
+
+        if (formData.preferedAlias !== '') {
+            generatedKey = formData.preferedAlias
+            generatedURL = "linkswift.com/" + generatedKey
+        }
+
+        const db = getDatabase();
+        set(ref(db, '/' + generatedKey), {
+            generatedKey: generatedKey,
+            longURL: formData.longURL,
+            preferedAlias: formData.preferedAlias,
+            generatedURL: generatedURL
+        }).then((result) => {
+            setFormData({
+                ...formData,
+                generatedURL: generatedURL,
+                loading: false
+            })
+        }).catch((e) => {
+            //Handle errors
+        })
+
     }
 
     const hasError = (key) => {
         return formData.errors.indexOf(key) !== -1
+    }
+
+    const handleChange = (e) => {
+        const { id, value } = e.target
+        setFormData({
+            ...formData,
+            [id]: value
+        })
+        console.log(id, value)
+    }
+
+    const validateInput = async () => {
+        var errors = []
+        var errorMessages = formData.errorMessage
+
+        //Validate long url
+        if (formData.longURL.length === 0) {
+            errors.push("longURL")
+            errorMessages['longURL'] = "Please enter a URL."
+        } else if (!isWebUri(formData.longURL)) {
+            errors.push("longURL")
+            errorMessages["longURL"] = "Please enter a URL in the form of https://www......"
+        }//Additional retrictions for later
+
+        //Validate preferred alias
+        if (formData.preferedAlias !== '') {
+            if (formData.preferedAlias.length > 7) {
+                errors.push('suggestedAlias')
+                errorMessages['suggestedAlias'] = 'Please enter an Alias less than 7 characters.'
+            } else if (formData.preferedAlias.indexOf(' ') >= 0) {
+                errors.push('suggestedAlias')
+                errorMessages['suggestedAlias'] = 'No Spaces allowed. Please enter one witout space.'
+            }
+
+            var keyExists = await checkKeyExists()
+
+            if (keyExists.exists()) {
+                errors.push('suggestedAlias')
+                errorMessages['suggestedAlias'] = 'The Alias you have enter already exists. Pleae enter a different one.'
+            }
+
+            setFormData({
+                ...formData,
+                errors: errors,
+                errorMessages: errorMessages,
+                loading: false
+            })
+
+            if (errors.length > 0) {
+                return false
+            }
+
+            return true
+        }
+    }
+
+    const checkKeyExists = async () => { // Will be used inside validate url function
+        const dbRef = ref(getDatabase())
+        return get(child(dbRef, `/${formData.preferedAlias}`)).catch((error) => {
+            return false
+        })
+    }
+
+    const copyToClipBoard = () => {
+        navigator.clipboard.writeText(formData.generatedURL)
+        setFormData({
+            toolTipMessage: 'Copied'
+        })
     }
 
     return (
@@ -44,7 +148,7 @@ function Form(props) {
                     <div className="form-group">
                         <label>Enter your URL</label>
                         <input id="longURL"
-                            //Add Handle change
+                            onChange={handleChange}
                             value={formData.longURL}
                             type="url"
                             required
@@ -56,7 +160,7 @@ function Form(props) {
                             placeholder="https://www." />
                     </div>
 
-                    <div className={ //Will stay visually hidden until an error from inputted URL 
+                    <div className={ // Will stay visually hidden until an error from inputted URL 
                         hasError("longURL") ? "text-danger" : "visually-hidden"
                     }
                     >
@@ -70,21 +174,21 @@ function Form(props) {
                                 <span className="input-group-text">linkswift.com/</span>
                             </div>
                             <input
-                                id="preferredAlias"
-                                //onChange={handleChange}
+                                id="preferedAlias"
+                                onChange={handleChange}
                                 value={formData.preferedAlias}
+                                type="text"
                                 className={
-                                    hasError('preferredAlias')
+                                    hasError('preferedAlias')
                                         ? "form-control is-invalid"
                                         : "form-control"
                                 }
-                                type="text"
                                 placeholder="eg. w4guy6 (Optional)"
                             />
                         </div>
                     </div>
 
-                    <div className={ //Will stay hidden until error from inputted short URL
+                    <div className={ // Will stay hidden until error from inputted short URL
                         hasError("preferrededAlias") ? "text-dange" : "visually-hidden"}>
                         {formData.errorMessage.suggestedAlias}
                     </div>
@@ -108,7 +212,7 @@ function Form(props) {
                         }
                     </button>
 
-                    {
+                    { // Will render when the generated url is created
                         formData.generatedURL === '' ?
                             <div></div>
                             :
@@ -133,7 +237,7 @@ function Form(props) {
                                             }
                                         >
                                             <button
-                                                //onClick={() => copyToClipBoard()}
+                                                onClick={() => copyToClipBoard()}
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="Tooltip on top"
