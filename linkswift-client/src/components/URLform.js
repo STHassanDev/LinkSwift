@@ -20,7 +20,7 @@ function Form(props) {
     }
 
     useEffect(()=>{
-        console.log(formData.errors.indexOf("longURL") !== -1)
+        console.log(formData.errors.indexOf("longURL"))
     },[formData,setFormData])
 
 
@@ -59,6 +59,7 @@ function Form(props) {
         }).then((result) => {
             setFormData({
                 ...formData,
+                errors:[],
                 generatedURL: generatedURL,
                 loading: false
             })
@@ -88,7 +89,9 @@ function Form(props) {
         } else if (!isWebUri(formData.longURL)) {
             errors.push("longURL")
             errorMessages["longURL"] = "Please enter a URL in the form of https://www......"
-        }//Additional retrictions for later
+        }else{//Additional retrictions for later
+
+        }
 
         //Validate preferred alias
         if (formData.preferedAlias !== '') {
