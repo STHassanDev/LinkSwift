@@ -59,7 +59,7 @@ function Form(props) {
         }).then((result) => {
             setFormData({
                 ...formData,
-                errors:[],
+                errors:[],// I should probably reset error messages too?
                 generatedURL: generatedURL,
                 loading: false
             })
@@ -86,11 +86,12 @@ function Form(props) {
         if (formData.longURL.length === 0) {
             errors.push("longURL")
             errorMessages['longURL'] = "Please enter a URL."
+        } else if (formData.longURL.length<=15) {
+            errors.push("longURL")
+            errorMessages["longURL"] = "This URL is too short to shorten further."
         } else if (!isWebUri(formData.longURL)) {
             errors.push("longURL")
             errorMessages["longURL"] = "Please enter a URL in the form of https://www......"
-        }else{//Additional retrictions for later
-
         }
 
         //Validate preferred alias
