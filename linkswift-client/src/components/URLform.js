@@ -86,7 +86,7 @@ function Form(props) {
         if (formData.longURL.length === 0) {
             errors.push("longURL")
             errorMessages['longURL'] = "Please enter a URL."
-        } else if (formData.longURL.length<=15) {
+        } else if (formData.longURL.length<=12) {
             errors.push("longURL")
             errorMessages["longURL"] = "This URL is too short to shorten further."
         } else if (!isWebUri(formData.longURL)) {
