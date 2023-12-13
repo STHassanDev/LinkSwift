@@ -24,7 +24,7 @@ function Form(props) {
     },[formData,setFormData])
 
 
-    async function onSubmit(event) {// Needs to be finished
+    async function onSubmit(event) {
         event.preventDefault(); //Prevents the page from reloading.D
         setFormData({
             ...formData,
@@ -135,6 +135,7 @@ function Form(props) {
     const copyToClipBoard = () => {
         navigator.clipboard.writeText(formData.generatedURL)
         setFormData({
+            ...formData,
             toolTipMessage: 'Copied'
         })
     }
