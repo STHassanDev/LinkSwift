@@ -19,11 +19,6 @@ function Form(props) {
         return formData.errors.indexOf(key) !== -1
     }
 
-    useEffect(()=>{
-        console.log(formData.errors.indexOf("longURL"))
-    },[formData,setFormData])
-
-
     async function onSubmit(event) {
         event.preventDefault(); //Prevents the page from reloading.D
         setFormData({
