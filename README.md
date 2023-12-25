@@ -10,7 +10,9 @@ React Client Application styled using bootstrap CSS. The app takes the long URL 
 - Firebase Account
 - RealTime Database on Firebase Account
 - Configure the 'firebaseconfig' object in index.js file to the object found in the project setting of your database.
-
+### Commands to run client locally (Windows)
+1. **`npm install`** all of the dependancies listed in the client README. (See linkswift-client folder)
+2. **`npm start`**
 
 
 ## linkswift-server
