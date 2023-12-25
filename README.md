@@ -23,10 +23,12 @@ Python Flask Web Server that listens for calls made with the generated URL. The 
 - Make sure to use the correct reference url to your database in /app/main.py
 ### Commands to run client locally (Windows)
 1. Create a production build for the client app
--- **`cd ../linkswift-client`** **`npm run build`**
+**`cd ../linkswift-client`**
+**`npm run build`**
 2. Copy and Paste the build folder into the linkswift-server/app folder
 3. Create a virtual envirnoment and activate it.
--- **`python -m venv {name}`** **`{name}/Scripts/activate`**
+**`python -m venv {name}`**
+**`{name}/Scripts/activate`**
 4. Run **`python wsgi.py`**
 
 
