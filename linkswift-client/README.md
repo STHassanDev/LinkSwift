@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Install these packages before running locally 
+- bootstrap and react-bootstrap
+- nanoid
+- react-router-dom
+- firebase
+- valid-url
+
 ## Available Scripts
 
 In the project directory, you can run:
