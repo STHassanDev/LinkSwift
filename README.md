@@ -22,11 +22,11 @@ Python Flask Web Server that listens for calls made with the generated URL. The 
 - Firebase Service account key file **`ServiceAccountKey.json`** (Generate a private key in the project settings on firebase. Copy and Paste into this file.)
 - Make sure to use the correct reference url to your database in /app/main.py
 ### Commands to run client locally (Windows)
-1. Create a production build for the client app
-\n **`cd ../linkswift-client`**
-\n **`npm run build`**
-2. Copy and Paste the build folder into the linkswift-server/app folder
-3. Create a virtual envirnoment and activate it.
+1. Create a production build for the client app --
+**`cd ../linkswift-client`**
+**`npm run build`**
+2. Copy and Paste the build folder into the linkswift-server/app folder 
+3. Create a virtual envirnoment and activate it. --
 **`python -m venv {name}`**
 **`{name}/Scripts/activate`**
 4. Run **`python wsgi.py`**
