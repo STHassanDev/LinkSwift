@@ -36,6 +36,10 @@ When testing the flask server, it is best to do it in a virtual envrionment from
 **`cd ../linkswift-server`** <br/>
 **`python -m venv {name}`** <br/>
 **`{name}/Scripts/activate`**
-3. Run **`python wsgi.py`**
+3. Install required packages: <br/>
+**`pip install -r requirements.txt`**
+4. Run **`python wsgi.py`**
+
+  The Server should be running after step 4. To test the server fetching url's, go to any browser on your machine and type whatever reference you are given for the locally hosted server and add "/{whatever alias you are given by the client." (Remember to get rid of the "/app".
 
 
