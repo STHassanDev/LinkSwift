@@ -31,6 +31,7 @@ Make sure you have nodejs and python installed on your local machine
 **`npm run build`**
 2. Copy and Paste the build folder into the linkswift-server/app folder 
 3. Create a virtual envirnoment and activate it: <br/>
+**`cd ../linkswift-server`** <br/>
 **`python -m venv {name}`** <br/>
 **`{name}/Scripts/activate`**
 4. Run **`python wsgi.py`**
