@@ -33,9 +33,9 @@ When testing the flask server, it is best to do it in a virtual envrionment from
 **`cd `** into the linkswift-client folder<br/>
 **`npm run build`**
 2. Copy and Paste the build folder into the linkswift-server/app folder 
-- Option Step for creating the virtual environment. <br/> Create a virtual envirnoment and activate it: <br/>
-**`cd`** into the linkswift-server folder <br/>
-**`python -m venv {name}`** ({name} can be anything string you come up with) <br/>
+- Option Step for creating the virtual environment. <br/> Create a virtual envirnoment and activate it: <br />
+**`cd`** into the linkswift-server folder <br />
+**`python -m venv {name}`** ({name} can be anything string you come up with) <br />
 **`{name}/Scripts/activate`**
 3. Install required packages: <br/>
 **`pip install -r requirements.txt`**
