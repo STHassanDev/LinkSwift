@@ -23,7 +23,7 @@ def fetch(generatedKey):
     ref = db.reference('/'+generatedKey)
     data = ref.get()
     if not data:
-        return '404 not found' # fix later to redirect to 404 page
+        return '404 not found'
     else:
         longURL = data['longURL']
         return redirect(longURL)

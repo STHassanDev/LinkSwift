@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { nanoid } from 'nanoid'
 import { getDatabase, child, ref, set, get } from 'firebase/database'
 import { isWebUri } from 'valid-url'
@@ -54,13 +54,11 @@ function Form(props) {
         }).then((result) => {
             setFormData({
                 ...formData,
-                errors:[],// I should probably reset error messages too?
+                errors:[],
                 generatedURL: generatedURL,
                 loading: false
             })
-        }).catch((e) => {
-            //Handle errors
-        })
+        }).catch((e) => {})
 
     }
 
