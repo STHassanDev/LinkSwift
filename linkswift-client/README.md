@@ -3,11 +3,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ### Install these packages before running locally 
-- bootstrap and react-bootstrap
-- nanoid
-- react-router-dom
-- firebase
-- valid-url
+- bootstrap and react-bootstrap are the styling of the application
+- nanoid is used for when there is no preferred alias inputted. THe application will generate a string of 6 characters.
+- react-router-dom for component based routing in the application 
+- firebase for connecting the application to firebase
+- valid-url for checking whether or not the inputted url is valid or not.
 
 ## Available Scripts
 
